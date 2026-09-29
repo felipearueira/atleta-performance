@@ -1,95 +1,796 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Atleta Performance</title>
-<style>
-:root{color-scheme:light dark;--bg:light-dark(#f5f6f8,#0e1116);--surface:light-dark(#fff,#171b22);--surface2:light-dark(#f0f2f5,#20252e);--text:light-dark(#17191d,#f5f7fa);--muted:light-dark(#6b7280,#9aa3b2);--line:light-dark(#e3e6eb,#2b313b);--accent:#ff6b2c;--green:#23a26d;--blue:#4f7cff;--yellow:#e5a72f;--purple:#8a63d2}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text)}
-#app{min-height:100vh;background:var(--bg);padding:28px clamp(18px,4vw,48px) 42px;border-radius:0}.container{max-width:1180px;margin:auto}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:18px}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.13em;color:var(--accent);font-weight:800}.title{font-size:30px;font-weight:800;letter-spacing:-.03em;margin:5px 0}.sub{color:var(--muted);font-size:14px}.date{background:var(--surface);border:1px solid var(--line);padding:10px 14px;border-radius:12px;color:var(--muted);font-size:13px}
-.tabs{display:flex;gap:7px;overflow:auto;margin-bottom:14px}.tab{border:1px solid var(--line);background:var(--surface);color:var(--muted);padding:9px 13px;border-radius:10px;font-weight:750;font-size:12px;white-space:nowrap;cursor:pointer}.tab.active{background:var(--text);color:var(--bg);border-color:var(--text)}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 2px 10px #00000008}.metric-label{font-size:12px;color:var(--muted);margin-bottom:9px}.metric{font-size:25px;font-weight:800;letter-spacing:-.03em}.metric small{font-size:13px;font-weight:600;color:var(--muted)}
-.layout{display:grid;grid-template-columns:1.55fr 1fr;gap:14px;margin-top:14px}.section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.section-title h2{font-size:16px;margin:0}.tag{font-size:11px;font-weight:800;padding:5px 8px;border-radius:999px;background:var(--surface2);color:var(--muted)}
-.balance{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.balance .box{padding:14px;background:var(--surface2);border-radius:12px}.box-label{font-size:11px;color:var(--muted)}.box-value{font-size:20px;font-weight:800;margin-top:5px}.deficit{color:var(--green)}
-.bar-wrap{margin-top:18px}.bar-head{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:7px}.bar{height:9px;border-radius:9px;background:var(--surface2);overflow:hidden}.bar span{display:block;width:76%;height:100%;background:var(--accent);border-radius:9px}
-.week{display:flex;align-items:end;gap:10px;height:145px;padding:8px 3px 0}.day{flex:1;text-align:center}.col{height:105px;display:flex;align-items:end;justify-content:center}.fill{width:26px;border-radius:8px 8px 3px 3px;background:var(--blue)}.day span{font-size:11px;color:var(--muted);display:block;margin-top:7px}.km{font-size:10px;color:var(--text);margin-top:3px}
-.tip{background:linear-gradient(135deg,#1b2028,#12151b);color:#fff;border:0}.tip .tag{background:#2b313b;color:#dbe1ea}.tip p{color:#c8ced8;line-height:1.55;font-size:13px}.tip strong{color:#fff}.fuel{display:flex;gap:10px;margin-top:14px}.fuel div{flex:1;background:#262c35;border-radius:11px;padding:11px}.fuel b{display:block;font-size:17px}.fuel span{font-size:10px;color:#aab2bf}
-.activity-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.activity{padding:12px;background:var(--surface2);border-radius:12px;border:1px solid transparent}.activity.active{border-color:var(--accent)}.activity b{display:block;font-size:12px}.activity span{font-size:10px;color:var(--muted)}
-.meals{display:grid;gap:8px}.meal{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}.meal:last-child{border-bottom:0}.meal b{font-size:13px}.meal span{display:block;font-size:12px;color:var(--muted);margin-top:2px}.meal-actions{display:flex;gap:6px;align-items:center}.meal button{border:0;background:var(--surface2);color:var(--text);border-radius:8px;padding:6px 9px;cursor:pointer;font-size:11px;font-weight:700}
-.swap-panel{margin-top:10px;background:var(--surface2);border-radius:12px;padding:12px;display:none}.swap-panel.open{display:block}.swap-title{font-size:11px;font-weight:800;margin-bottom:8px;color:var(--muted)}.swap-list{display:flex;flex-wrap:wrap;gap:6px}.swap{border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:8px;padding:7px 9px;font-size:11px;cursor:pointer}.swap:hover{border-color:var(--accent)}.meal.done{background:var(--surface2);border-radius:10px;padding:11px}.meal-cal{font-size:11px;font-weight:800;color:var(--green);margin-top:4px}.meal button.undo{background:transparent;border:1px solid var(--line)}
-.workout-form{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.workout-form input,.workout-form select{width:100%;border:1px solid var(--line);background:var(--surface2);color:var(--text);border-radius:9px;padding:9px;font:inherit;font-size:12px}.workout-form .wide{grid-column:span 2}.form-actions{display:flex;gap:8px;align-items:center}.workout-list{display:grid;gap:8px;margin-top:12px}.workout-row{display:flex;justify-content:space-between;gap:10px;align-items:center;background:var(--surface2);padding:10px;border-radius:10px}.workout-row b{font-size:12px}.workout-row span{font-size:11px;color:var(--muted)}.source-note{font-size:11px;color:var(--muted);margin-top:9px;line-height:1.45}
-.footer{margin-top:14px;display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:11px}.action{border:1px solid var(--line);background:var(--surface);color:var(--text);padding:9px 12px;border-radius:10px;cursor:pointer}
-.page{display:none}.page.active{display:block}.page-head{margin:18px 0 12px}.page-head h1{margin:0 0 5px;font-size:22px}.page-head p{margin:0;color:var(--muted);font-size:13px}.two-col{display:grid;grid-template-columns:1.4fr 1fr;gap:14px}.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.exercise-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.exercise{padding:12px;border:1px solid var(--line);background:var(--surface2);border-radius:12px;cursor:pointer;color:var(--text);text-align:left}.exercise.selected{border-color:var(--accent);box-shadow:0 0 0 2px #ff6b2c22}.exercise b{display:block;font-size:13px}.exercise span{display:block;color:var(--muted);font-size:11px;margin-top:3px}.page-actions{display:flex;gap:8px;flex-wrap:wrap}.notice{padding:11px 13px;background:var(--surface2);border-radius:10px;color:var(--muted);font-size:12px;line-height:1.45}.food-option.selected{border-color:var(--accent);background:var(--surface2)}.food-option{width:100%;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--text);border-radius:11px;padding:11px;cursor:pointer}.food-option b{display:block;font-size:12px}.food-option span{display:block;color:var(--muted);font-size:11px;margin-top:4px}.option-list{display:grid;gap:7px}.history{display:grid;gap:8px}.history-row{display:flex;justify-content:space-between;gap:10px;padding:10px;background:var(--surface2);border-radius:10px}.history-row small{color:var(--muted)}.empty{padding:20px;text-align:center;color:var(--muted);font-size:12px}
-@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}.top{flex-direction:column}.date{align-self:stretch}.balance{grid-template-columns:1fr}.activity-grid{grid-template-columns:repeat(2,1fr)}}
-</style>
-</head>
-<body><div id="app"><div class="container">
-<header class="top"><div><div class="eyebrow">Performance • Nutrição • Treino</div><div class="title">Atleta Performance</div><div class="sub">Painel diário para cruzar Garmin + dieta + evolução semanal.</div></div><div class="date">Hoje · aguardando dados do Garmin</div></header>
-<nav class="tabs"><button class="tab active" onclick="selectTab(this,'Resumo')">Resumo</button><button class="tab" onclick="selectTab(this,'Corrida')">🏃 Corrida</button><button class="tab" onclick="selectTab(this,'Musculação')">🏋️ Musculação</button><button class="tab" onclick="selectTab(this,'Cardio')">❤️ Cardio</button><button class="tab" onclick="selectTab(this,'Nutrição')">🥗 Nutrição</button><button class="tab" onclick="selectTab(this,'Evolução')">📈 Evolução</button></nav>
-<main id="pages"><section class="page active" data-page="Resumo"><div class="page-head"><h1>Resumo do dia</h1><p>Visão rápida do treino, alimentação e saldo energético.</p></div><section class="grid"><div class="card"><div class="metric-label">DISTÂNCIA HOJE</div><div id="m-distance" class="metric">— <small>km</small></div></div><div class="card"><div class="metric-label">PACE</div><div id="m-pace" class="metric">— <small>min/km</small></div></div><div class="card"><div class="metric-label">CALORIAS DO TREINO</div><div id="m-calories" class="metric">— <small>kcal</small></div></div><div class="card"><div class="metric-label">GASTO TOTAL</div><div id="m-expenditure" class="metric">— <small>kcal</small></div></div></section><div class="layout"><div class="card"><div class="section-title"><h2>🥗 Balanço nutricional</h2><span class="tag">1.783 kcal/dia</span></div><div class="balance"><div class="box"><div class="box-label">Consumo registrado</div><div id="summary-food" class="box-value">0 kcal</div></div><div class="box"><div class="box-label">Gasto Garmin</div><div id="summary-garmin" class="box-value">—</div></div><div class="box"><div class="box-label">Saldo</div><div id="summary-balance" class="box-value deficit">—</div></div></div><div class="bar-wrap"><div class="bar-head"><span>Consumo vs. dieta-base</span><b id="summary-pct">0%</b></div><div class="bar"><span id="summary-bar"></span></div></div></div><div class="card tip"><div class="section-title"><h2>🏃 Dica de performance</h2><span class="tag">Hoje</span></div><p>Registre sua atividade e alimentação para cruzar os dados do dia.</p><div class="fuel"><div><b>30–60 g/h</b><span>carboidrato · referência inicial</span></div><div><b>individualizar</b><span>hidratação conforme suor e clima</span></div></div></div></div><div class="card"><div class="section-title"><h2>Atalhos</h2><span class="tag">navegação</span></div><div class="page-actions"><button class="action" onclick="go('Corrida')">🏃 Registrar corrida</button><button class="action" onclick="go('Musculação')">🏋️ Registrar exercício</button><button class="action" onclick="go('Nutrição')">🥗 Registrar refeição</button></div></div></section>
-<section class="page" data-page="Corrida"><div class="page-head"><h1>🏃 Corrida</h1><p>Distância, pace, calorias, FC e dados do Garmin.</p></div><div class="two-col"><div class="card"><div class="section-title"><h2>Registrar corrida</h2><span class="tag">manual ou Garmin</span></div><div class="workout-form"><input id="runDate" type="date"><input id="runDistance" type="number" min="0" step="0.01" placeholder="Distância (km)"><input id="runDuration" type="number" min="0" step="1" placeholder="Duração (min)"><input id="runPace" placeholder="Pace (min/km)"><input id="runCalories" type="number" min="0" step="1" placeholder="Calorias"><input id="runExpenditure" type="number" min="0" step="1" placeholder="Gasto total Garmin"><input id="runHeartRate" type="number" min="0" step="1" placeholder="FC média"><input id="runNotes" class="wide" placeholder="Observações"><div class="form-actions"><button class="action" onclick="addRun()">Registrar corrida</button></div></div><div class="notice">📷 Para Garmin, envie o print no chat. O assistente registra somente os dados visíveis.</div></div><div class="card"><div class="section-title"><h2>Corridas registradas</h2><span class="tag" id="run-count">0</span></div><div id="run-list" class="history"></div></div></div></section>
-<section class="page" data-page="Musculação"><div class="page-head"><h1>🏋️ Musculação</h1><p>Escolha os grupos/exercícios realizados no dia. Você pode selecionar vários.</p></div><div class="two-col"><div class="card"><div class="section-title"><h2>O que você treinou?</h2><span class="tag">selecione vários</span></div><div id="exercise-grid" class="exercise-grid"></div><div class="workout-form" style="margin-top:12px"><input id="strengthDate" type="date"><input id="strengthDuration" type="number" min="0" step="1" placeholder="Duração (min)"><input id="strengthCalories" type="number" min="0" step="1" placeholder="Calorias"><input id="strengthNotes" class="wide" placeholder="Observações"><div class="form-actions"><button class="action" onclick="addStrength()">Registrar musculação</button></div></div></div><div class="card"><div class="section-title"><h2>Treinos registrados</h2><span class="tag" id="strength-count">0</span></div><div id="strength-list" class="history"></div></div></div></section>
-<section class="page" data-page="Cardio"><div class="page-head"><h1>❤️ Cardio</h1><p>Bike, caminhada, escada, transport, funcional e outros cardios em uma única página.</p></div><div class="two-col"><div class="card"><div class="section-title"><h2>Registrar cardio</h2><span class="tag">escolha a modalidade</span></div><div class="workout-form"><select id="cardioType"><option>Bike</option><option>Caminhada</option><option>Escada</option><option>Transport</option><option>Funcional</option><option>Outro cardio</option></select><input id="cardioDate" type="date"><input id="cardioDuration" type="number" min="0" step="1" placeholder="Duração (min)"><input id="cardioCalories" type="number" min="0" step="1" placeholder="Calorias"><input id="cardioDistance" type="number" min="0" step="0.01" placeholder="Distância (km)"><input id="cardioHeartRate" type="number" min="0" step="1" placeholder="FC média"><input id="cardioNotes" class="wide" placeholder="Observações"><div class="form-actions"><button class="action" onclick="addCardio()">Registrar cardio</button></div></div></div><div class="card"><div class="section-title"><h2>Cardios registrados</h2><span class="tag" id="cardio-count">0</span></div><div id="cardio-list" class="history"></div></div></div></section>
-<section class="page" data-page="Nutrição"><div class="page-head"><h1>🥗 Nutrição</h1><p>Escolha a opção que comeu. Clique novamente na mesma opção para desfazê-la.</p></div><div class="two-col"><div id="meal-list" class="history"></div><div class="card"><div class="section-title"><h2>Registro de hoje</h2><span class="tag" id="food-total">0 kcal</span></div><div id="food-history" class="history"></div><div class="notice" style="margin-top:10px">Água: 2.500–3.000 ml/dia · creatina: 5 g/dia. O plano prevê até 3 refeições livres/semana.</div></div></div></section>
-<section class="page" data-page="Evolução"><div class="page-head"><h1>📈 Evolução</h1><p>Histórico acumulado de treinos e alimentação registrados.</p></div><div class="three-col"><div class="card"><div class="metric-label">KM DE CORRIDA</div><div id="evo-km" class="metric">0 <small>km</small></div></div><div class="card"><div class="metric-label">TREINOS</div><div id="evo-workouts" class="metric">0</div></div><div class="card"><div class="metric-label">SALDO</div><div id="evo-balance" class="metric">—</div></div></div><div class="card" style="margin-top:14px"><div class="section-title"><h2>Histórico recente</h2><span class="tag">mais novos primeiro</span></div><div id="evo-history" class="history"></div></div></section></main>
-<div class="footer"><span>Atleta Performance · registros do usuário + dados do Garmin.</span><button class="action" onclick="alert('Cada aba agora abre sua própria página. Na Nutrição, clique novamente na opção selecionada para desfazê-la.')">Como funciona</button></div>
-</div></div>
-<script type="module">
-import { App } from 'https://cdn.jsdelivr.net/npm/@modelcontextprotocol/ext-apps@1.6.0/+esm';
-const state={food:[],workouts:[],dailyTarget:1783,selected:{}};
-const mealKcal={'Pré-treino':100,'Café da manhã':360,'Almoço':650,'Lanche':180,'Jantar':493};
-const app=new App({name:'Atleta Performance',version:'1.0.0'},{});
-let connected=false;
-async function connectApp(){try{await app.connect();connected=true;const r=await app.callServerTool({name:'open_dashboard',arguments:{}});if(r?.structuredContent){state.food=r.structuredContent.food||[];state.workouts=r.structuredContent.workouts||[];state.dailyTarget=r.structuredContent.dailyTarget||1783;}render();}catch(e){uiConnected=false;if(status){status.style.display='block';status.textContent='ERRO DE CONEXÃO: '+(e?.message||String(e))}}
-async function callTool(name,args){if(!connected)return null;return await app.callServerTool({name,arguments:args})}
-function toggleSwap(id){document.getElementById(id).classList.toggle('open')}
-function totalCalories(){return state.food.reduce((s,x)=>s+(Number(x.calories)||0),0)}
-function updateSummary(){const box=document.querySelector('.balance .box-value');if(box)box.textContent=Math.round(totalCalories()).toLocaleString('pt-BR')+' kcal';const pct=Math.min(100,totalCalories()/state.dailyTarget*100);const bar=document.querySelector('.bar span');if(bar)bar.style.width=pct+'%';const p=document.querySelector('.bar-head b');if(p)p.textContent=Math.round(pct)+'%'}
-function render(){document.querySelectorAll('.meal').forEach(meal=>{const title=meal.querySelector('b')?.textContent;if(!title)return;const item=state.food.find(x=>x.meal===title);const actions=meal.querySelector('.meal-actions');if(item){meal.classList.add('done');actions.innerHTML='<span class="meal-cal">'+Math.round(item.calories||0)+' kcal</span><button class="undo" type="button" onclick="undoMeal(\''+item.id+'\',this)">Desfazer</button>'}else{meal.classList.remove('done');if(actions&&!actions.querySelector('button'))actions.innerHTML='<button type="button" onclick="toggleSwap(\''+({"Pré-treino":"pre","Café da manhã":"cafe","Almoço":"almoco","Lanche":"lanche","Jantar":"jantar"}[title]||'')+'\')">Trocar</button><button type="button" onclick="mark(this)">Marcar</button>'}});updateSummary()}
-window.toggleSwap=toggleSwap;
-window.mark=async function(btn){if(btn.dataset.busy==='1')return;btn.dataset.busy='1';const meal=btn.closest('.meal');const title=meal.querySelector('b')?.textContent||'Refeição';const description=meal.querySelector('span')?.textContent||title;const calories=mealKcal[title]||null;try{const r=await callTool('registrar_alimentacao',{meal:title,description,calories});const item=r?.structuredContent?.food?.at(-1)||{id:crypto.randomUUID(),meal:title,description,calories};state.food=r?.structuredContent?.food||[...state.food,item];render();}catch(e){state.food.push({id:crypto.randomUUID(),meal:title,description,calories});render();}btn.dataset.busy='0'};
-window.undoMeal=async function(id,btn){btn.disabled=true;try{const r=await callTool('desfazer_alimentacao',{id});if(r?.structuredContent?.food)state.food=r.structuredContent.food;else state.food=state.food.filter(x=>x.id!==id);}catch(e){state.food=state.food.filter(x=>x.id!==id)}render()};
-window.chooseSwap=async function(btn){const panel=btn.closest('.swap-panel');const meal=panel?.previousElementSibling;const title=meal?.querySelector('b')?.textContent||'Refeição';const description=btn.textContent.trim();try{const r=await callTool('registrar_alimentacao',{meal:title,description,calories:mealKcal[title]||null});if(r?.structuredContent?.food)state.food=r.structuredContent.food;else state.food.push({id:crypto.randomUUID(),meal:title,description,calories:mealKcal[title]||null});}catch(e){state.food.push({id:crypto.randomUUID(),meal:title,description,calories:mealKcal[title]||null})}btn.parentElement.querySelectorAll('.swap').forEach(x=>x.style.outline='none');btn.style.outline='2px solid var(--accent)';render()}
-function selectTab(btn,name){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.querySelector('.date').textContent=name+' · dados do Atleta Performance'}
-window.selectTab=selectTab;
-document.addEventListener('click',e=>{if(e.target.classList.contains('swap'))window.chooseSwap(e.target)});
-window.chooseSwap=async function(btn){const panel=btn.closest('.swap-panel');const meal=panel?.previousElementSibling;const title=meal?.querySelector('b')?.textContent||'Refeição';const description=btn.textContent.trim();const kcal={'Com banana · 15g doce de leite + 65g banana':120,'Pão + queijo minas + 2 ovos':390,'Crepioca + ovo + queijo minas':320,'Queijo → 1 ovo':350,'Queijo → requeijão light':340,'Queijo → muçarela':390,'Arroz → macarrão':575,'Batata → arroz integral':600,'Batata → arroz branco':590,'Batata → purê de batata':590,'Batata → purê de abóbora':540,'Frango → filé mignon':610,'Frango → peixe':570,'Frango → carne magra':600,'Iogurte + uva + whey':180,'Panqueca de banana':190,'Bold Tube · até 2x/semana':190,'YoPRO':160,'Uva → banana':155,'Uva → morango':150,'Uva → kiwi':150,'Comida':600,'Hambúrguer':720,'Pastel de Rap10':650,'Poke · até 2x/semana':700};const calories=kcal[description]??mealKcal[title]??null;try{const r=await callTool('registrar_alimentacao',{meal:title,description,calories,calorieSource:'estimativa do dashboard'});if(r?.structuredContent?.food)state.food=r.structuredContent.food;else state.food.push({id:crypto.randomUUID(),meal:title,description,calories});}catch(e){state.food.push({id:crypto.randomUUID(),meal:title,description,calories})}btn.parentElement.querySelectorAll('.swap').forEach(x=>x.style.outline='none');btn.style.outline='2px solid var(--accent)';render()};
-window.addWorkout=async function(){const n=id=>{const v=document.getElementById(id)?.value;return v===''||v==null?null:Number(v)};const args={type:document.getElementById('workoutType').value,date:document.getElementById('workoutDate').value||new Date().toISOString(),source:'manual',durationMinutes:n('workoutDuration'),distanceKm:n('workoutDistance'),pace:document.getElementById('workoutPace').value||null,calories:n('workoutCalories'),totalExpenditure:n('workoutExpenditure'),heartRate:n('workoutHeartRate'),notes:document.getElementById('workoutNotes').value||null};try{const r=await callTool('registrar_treino',args);if(r?.structuredContent?.workouts)state.workouts=r.structuredContent.workouts;render();}catch(e){alert('Não foi possível registrar o treino agora.')}};
-connectApp();
-</script>
-<script type="module">
-import { App } from 'https://cdn.jsdelivr.net/npm/@modelcontextprotocol/ext-apps@1.6.0/+esm';
-const uiState={food:[],workouts:[],dailyTarget:1783};
-const meals={
- 'Pré-treino':[['Doce de leite 30 g + café 240 ml',95],['Doce de leite 15 g + café 240 ml + banana prata 65 g',120]],
- 'Café da manhã':[['Pão 50 g + queijo minas 30 g + 2 ovos 100 g',390],['Tapioca 30 g + ovo 50 g + queijo minas 60 g',320],['Queijo → 1 ovo',350],['Queijo → requeijão light',340],['Queijo → muçarela',390]],
- 'Almoço':[['Base: arroz integral 80 g + batata inglesa 200 g + feijão 140 g + frango 100 g + vegetais + salada',600],['Arroz → macarrão cozido 70,6 g',575],['Batata → arroz integral 100 g',600],['Batata → arroz branco 76,8 g',590],['Batata → purê de batata 140 g',590],['Batata → purê de abóbora 246,2 g',540],['Frango → filé mignon',610],['Frango → peixe',570],['Frango → carne magra',600]],
- 'Lanche':[['Iogurte 165 g + uva 85 g + whey 15 g',180],['Panqueca: whey 15 g + aveia 5 g + ovo 45 g + banana 40 g',190],['Bold Tube 40 g · máximo 2x/semana',190],['Iogurte 165 g + whey 15 g + The Chips Revolution 50 g',230],['SOS YoPRO 250 ml',160],['Fruta: uva → banana 40 g',155],['Fruta: uva → morango 144 g',150],['Fruta: uva → kiwi 76 g',150]],
- 'Jantar':[['Comida: arroz integral 100 g + batata inglesa 200 g + vegetais + frango 100 g + salada + psyllium',600],['Hambúrguer: fritas 50 g + pão 50 g + patinho 200 g + requeijão light 24 g + vegetais',720],['Rap10: 3 unidades + frango desfiado 120 g + requeijão light 36 g',650],['Poke: espaguete de abobrinha + salmão 150 g + arroz japonês 125 g + cream cheese 45 g + vegetais',700],['Arroz → macarrão',575],['Frango → peixe',570],['Frango → carne magra',600]]
-};
-const uiApp=new App({name:'Atleta Performance UI',version:'1.3.0'},{});let uiConnected=false;
-async function uiConnect(){try{await uiApp.connect();uiConnected=true;const r=await uiApp.callServerTool({name:'open_dashboard',arguments:{}});if(r?.structuredContent){uiState.food=r.structuredContent.food||[];uiState.workouts=r.structuredContent.workouts||[];uiState.dailyTarget=r.structuredContent.dailyTarget||1783}}catch(e){uiConnected=false}uiRender();goPage('Resumo')}
-async function uiCall(name,args){if(!uiConnected)return null;return await uiApp.callServerTool({name,arguments:args})}
-function esc(s){return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#039;")}
-function goPage(name){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.dataset.page===name));document.querySelectorAll('.tab').forEach(t=>{const label=t.textContent.replace(/[^p{L}p{N}s]/gu,'').trim();t.classList.toggle('active',label===name)});document.querySelector('.date').textContent=name+' · Atleta Performance';uiRender();window.scrollTo({top:0,behavior:'smooth'})}
-window.go=goPage;window.selectTab=(btn,name)=>goPage(name);
-function n(id){const v=document.getElementById(id)?.value;return v===''||v==null?null:Number(v)}
-async function addWorkout(args){const r=await uiCall('registrar_treino',args);if(r?.structuredContent?.workouts)uiState.workouts=r.structuredContent.workouts;uiRender()}
-window.addRun=()=>addWorkout({type:'Corrida',date:document.getElementById('runDate').value||new Date().toISOString(),source:'manual',distanceKm:n('runDistance'),durationMinutes:n('runDuration'),pace:document.getElementById('runPace').value||null,calories:n('runCalories'),totalExpenditure:n('runExpenditure'),heartRate:n('runHeartRate'),notes:document.getElementById('runNotes').value||null});
-window.addCardio=()=>addWorkout({type:document.getElementById('cardioType').value,date:document.getElementById('cardioDate').value||new Date().toISOString(),source:'manual',durationMinutes:n('cardioDuration'),calories:n('cardioCalories'),distanceKm:n('cardioDistance'),heartRate:n('cardioHeartRate'),notes:document.getElementById('cardioNotes').value||null});
-window.addStrength=()=>{const selected=[...document.querySelectorAll('.exercise.selected')].map(x=>x.dataset.name);return addWorkout({type:'Musculação',date:document.getElementById('strengthDate').value||new Date().toISOString(),source:'manual',durationMinutes:n('strengthDuration'),calories:n('strengthCalories'),notes:[selected.join(', '),document.getElementById('strengthNotes').value].filter(Boolean).join(' · ')||null})};
-window.toggleExercise=name=>document.querySelector('.exercise[data-name="'+CSS.escape(name)+'"]')?.classList.toggle('selected');
-window.undoFood=async id=>{const r=await uiCall('desfazer_alimentacao',{id});if(r?.structuredContent?.food)uiState.food=r.structuredContent.food;else uiState.food=uiState.food.filter(x=>x.id!==id);uiRender()};
-window.undoWorkout=async id=>{const r=await uiCall('desfazer_treino',{id});if(r?.structuredContent?.workouts)uiState.workouts=r.structuredContent.workouts;else uiState.workouts=uiState.workouts.filter(x=>x.id!==id);uiRender()};
-window.selectMeal=async(title,description,calories)=>{
-  alert('O botão está funcionando.');
-};const current=uiState.food.find(x=>x.meal===title);if(current?.description===description){const r=await uiCall('desfazer_alimentacao',{id:current.id});if(r?.structuredContent?.food)uiState.food=r.structuredContent.food;else uiState.food=uiState.food.filter(x=>x.id!==current.id)}else{const r=await uiCall('registrar_alimentacao',{meal:title,description,calories,calorieSource:'estimativa do dashboard'});if(r?.structuredContent?.food)uiState.food=r.structuredContent.food}uiRender()};
-function renderMeals(){const box=document.getElementById('meal-list');if(!box)return;box.innerHTML=Object.entries(meals).map(([title,opts])=>{const current=uiState.food.find(x=>x.meal===title);return '<div class="card"><div class="section-title"><h2>'+esc(title)+'</h2><span class="tag">'+(current?'✓ registrada':'não registrada')+'</span></div><div class="option-list">'+opts.map(([d,k])=>{const selected=current?.description===d;return '<button class="food-option '+(selected?'selected':'')+'" onclick="selectMeal(\''+esc(title)+'\',\''+esc(d)+'\','+k+')"><b>'+esc(d)+'</b><span>'+k+' kcal estimadas · '+(selected?'Selecionada · clique novamente para desfazer':'Clique para registrar')+'</span></button>'}).join('')+'</div></div>'}).join('')}
-function renderLists(){const list=(arr,id,count)=>{const box=document.getElementById(id),c=document.getElementById(count);if(c)c.textContent=arr.length;if(box)box.innerHTML=arr.length?arr.slice().reverse().map(w=>'<div class="history-row"><div><b>'+esc(w.type)+'</b><br><small>'+[w.date?.slice(0,10),w.distanceKm?w.distanceKm+' km':null,w.durationMinutes?w.durationMinutes+' min':null,w.calories?w.calories+' kcal':null,w.notes].filter(Boolean).map(esc).join(' · ')+'</small></div><button class="action" onclick="undoWorkout(\''+w.id+'\')">Desfazer</button></div>').join(''):'<div class="empty">Nenhum registro ainda.</div>'};list(uiState.workouts.filter(w=>w.type==='Corrida'),'run-list','run-count');list(uiState.workouts.filter(w=>w.type==='Musculação'),'strength-list','strength-count');list(uiState.workouts.filter(w=>w.type!=='Corrida'&&w.type!=='Musculação'),'cardio-list','cardio-count');const fh=document.getElementById('food-history');if(fh)fh.innerHTML=uiState.food.length?uiState.food.slice().reverse().map(f=>'<div class="history-row"><div><b>'+esc(f.meal)+'</b><br><small>'+esc(f.description)+'</small></div><button class="action" onclick="undoFood(\''+f.id+'\')">Desfazer</button></div>').join(''):'<div class="empty">Nenhuma refeição registrada.</div>';const ft=document.getElementById('food-total');if(ft)ft.textContent=Math.round(uiState.food.reduce((s,x)=>s+(Number(x.calories)||0),0))+' kcal'}
-function renderExercises(){const grid=document.getElementById('exercise-grid');if(grid&&!grid.children.length)grid.innerHTML=['Peito','Costas','Ombros','Bíceps','Tríceps','Quadríceps','Posterior de coxa','Glúteos','Panturrilha','Abdômen'].map(e=>'<button class="exercise" data-name="'+esc(e)+'" onclick="toggleExercise(\''+esc(e)+'\')"><b>'+esc(e)+'</b><span>Selecionar</span></button>').join('')}
-function updateMetrics(){const totalFood=uiState.food.reduce((s,x)=>s+(Number(x.calories)||0),0),today=uiState.workouts.filter(w=>(w.date||'').slice(0,10)===new Date().toISOString().slice(0,10)),run=today.find(w=>w.type==='Corrida'),distance=today.reduce((s,w)=>s+(Number(w.distanceKm)||0),0),burned=today.reduce((s,w)=>s+(Number(w.calories)||0),0),exp=today.find(w=>w.totalExpenditure!=null)?.totalExpenditure;document.getElementById('m-distance').innerHTML=(distance?distance.toFixed(2).replace('.',','):'—')+' <small>km</small>';document.getElementById('m-pace').innerHTML=(run?.pace||'—')+' <small>min/km</small>';document.getElementById('m-calories').innerHTML=(burned?Math.round(burned):'—')+' <small>kcal</small>';document.getElementById('m-expenditure').innerHTML=(exp?Math.round(exp):'—')+' <small>kcal</small>';document.getElementById('summary-food').textContent=Math.round(totalFood)+' kcal';document.getElementById('summary-garmin').textContent=exp?Math.round(exp)+' kcal':'—';document.getElementById('summary-balance').textContent=exp?Math.round(exp-totalFood)+' kcal':'—';const pct=Math.min(100,totalFood/uiState.dailyTarget*100);document.getElementById('summary-bar').style.width=pct+'%';document.getElementById('summary-pct').textContent=Math.round(pct)+'%';const km=uiState.workouts.filter(w=>w.type==='Corrida').reduce((s,w)=>s+(Number(w.distanceKm)||0),0);document.getElementById('evo-km').innerHTML=Math.round(km*100)/100+' <small>km</small>';document.getElementById('evo-workouts').textContent=uiState.workouts.length;document.getElementById('evo-balance').textContent=exp?Math.round(exp-totalFood)+' kcal':'—';document.getElementById('evo-history').innerHTML=uiState.workouts.slice().reverse().slice(0,12).map(w=>'<div class="history-row"><div><b>'+esc(w.type)+'</b><br><small>'+[w.date?.slice(0,10),w.distanceKm?w.distanceKm+' km':null,w.durationMinutes?w.durationMinutes+' min':null,w.calories?w.calories+' kcal':null].filter(Boolean).join(' · ')+'</small></div></div>').join('')||'<div class="empty">Ainda não há histórico.</div>'}
-function uiRender(){renderMeals();renderLists();renderExercises();updateMetrics()}
-uiConnect();
-</script>
-</body></html>
+import { createServer } from "node:http";
+import { readFileSync } from "node:fs";
+import crypto from "node:crypto";
+
+import {
+  registerAppResource,
+  registerAppTool,
+  RESOURCE_MIME_TYPE,
+} from "@modelcontextprotocol/ext-apps/server";
+
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import { z } from "zod";
+
+const PORT = Number(process.env.PORT || 3000);
+const MCP_PATH = "/mcp";
+const DAILY_TARGET = 1783;
+
+/*
+ * ============================================================
+ * ESTADO DO APLICATIVO
+ * ============================================================
+ */
+
+const food = [];
+const workouts = [];
+
+/*
+ * Cada conexão MCP possui seu próprio transport.
+ * Isso permite que o cliente mantenha uma sessão estável.
+ */
+
+const sessions = new Map();
+
+/*
+ * ============================================================
+ * DASHBOARD
+ * ============================================================
+ */
+
+const dashboardHtml = readFileSync(
+  "public/dashboard.html",
+  "utf8"
+);
+
+/*
+ * ============================================================
+ * SCHEMAS
+ * ============================================================
+ */
+
+const foodItem = z.object({
+  id: z.string(),
+  meal: z.string(),
+  description: z.string(),
+  calories: z.number().nullable(),
+  calorieSource: z.string().nullable(),
+  date: z.string(),
+});
+
+const workoutItem = z.object({
+  id: z.string(),
+  type: z.string(),
+  date: z.string(),
+  source: z.string(),
+  distanceKm: z.number().nullable(),
+  pace: z.string().nullable(),
+  durationMinutes: z.number().nullable(),
+  calories: z.number().nullable(),
+  totalExpenditure: z.number().nullable(),
+  heartRate: z.number().nullable(),
+  notes: z.string().nullable(),
+});
+
+/*
+ * ============================================================
+ * ESTADO DO DASHBOARD
+ * ============================================================
+ */
+
+function getDashboardState() {
+  return {
+    food: [...food],
+    workouts: [...workouts],
+    dailyTarget: DAILY_TARGET,
+  };
+}
+
+/*
+ * ============================================================
+ * CRIAÇÃO DO SERVIDOR MCP
+ * ============================================================
+ */
+
+function createAtletaServer() {
+  const server = new McpServer(
+    {
+      name: "atleta-performance",
+      version: "2.0.0",
+    },
+    {
+      instructions:
+        "Você é o servidor do Atleta Performance. Registre alimentação e treinos informados pelo usuário. Não invente dados. Calorias que não vierem do usuário ou do planejamento devem ser tratadas como estimativas.",
+    }
+  );
+
+  /*
+   * ----------------------------------------------------------
+   * RECURSO VISUAL
+   * ----------------------------------------------------------
+   */
+
+  const resourceUri =
+    "ui://atleta-performance/dashboard.html";
+
+  registerAppResource(
+    server,
+    "atleta-dashboard",
+    resourceUri,
+    {},
+    async () => {
+      return {
+        contents: [
+          {
+            uri: resourceUri,
+            mimeType: RESOURCE_MIME_TYPE,
+            text: dashboardHtml,
+          },
+        ],
+      };
+    }
+  );
+
+  /*
+   * ----------------------------------------------------------
+   * ABRIR DASHBOARD
+   * ----------------------------------------------------------
+   */
+
+  registerAppTool(
+    server,
+    "open_dashboard",
+    {
+      title: "Abrir dashboard",
+      description:
+        "Abre o dashboard do Atleta Performance.",
+      inputSchema: {},
+      outputSchema: {
+        food: z.array(foodItem),
+        workouts: z.array(workoutItem),
+        dailyTarget: z.number(),
+      },
+      _meta: {
+        ui: {
+          resourceUri,
+        },
+      },
+    },
+    async () => {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "Dashboard do Atleta Performance aberto.",
+          },
+        ],
+        structuredContent:
+          getDashboardState(),
+      };
+    }
+  );
+
+  /*
+   * ----------------------------------------------------------
+   * REGISTRAR ALIMENTAÇÃO
+   * ----------------------------------------------------------
+   */
+
+  registerAppTool(
+    server,
+    "registrar_alimentacao",
+    {
+      title: "Registrar alimentação",
+
+      description:
+        "Registra uma refeição do planejamento alimentar.",
+
+      inputSchema: {
+        meal: z.string().min(1),
+        description: z.string().min(1),
+        calories: z
+          .number()
+          .nullable()
+          .optional(),
+
+        calorieSource: z
+          .string()
+          .nullable()
+          .optional(),
+
+        date: z
+          .string()
+          .optional(),
+      },
+
+      outputSchema: {
+        food: z.array(foodItem),
+      },
+
+      _meta: {
+        ui: {
+          resourceUri,
+          visibility: ["model", "app"],
+        },
+      },
+    },
+
+    async ({
+      meal,
+      description,
+      calories = null,
+      calorieSource = null,
+      date,
+    }) => {
+
+      const itemDate =
+        (date || new Date().toISOString())
+          .slice(0, 10);
+
+      /*
+       * Remove o registro anterior da mesma refeição
+       * no mesmo dia.
+       */
+
+      for (let i = food.length - 1; i >= 0; i--) {
+        if (
+          food[i].meal === meal &&
+          food[i].date.slice(0, 10) === itemDate
+        ) {
+          food.splice(i, 1);
+        }
+      }
+
+      const item = {
+        id: crypto.randomUUID(),
+        meal,
+        description,
+        calories,
+        calorieSource,
+        date: date || new Date().toISOString(),
+      };
+
+      food.push(item);
+
+      return {
+        content: [
+          {
+            type: "text",
+            text:
+              `Alimentação registrada: ${meal}.`,
+          },
+        ],
+
+        structuredContent: {
+          food: [...food],
+        },
+      };
+    }
+  );
+
+  /*
+   * ----------------------------------------------------------
+   * DESFAZER ALIMENTAÇÃO
+   * ----------------------------------------------------------
+   */
+
+  registerAppTool(
+    server,
+    "desfazer_alimentacao",
+    {
+      title: "Desfazer alimentação",
+
+      description:
+        "Remove uma refeição registrada.",
+
+      inputSchema: {
+        id: z.string().min(1),
+      },
+
+      outputSchema: {
+        food: z.array(foodItem),
+      },
+
+      _meta: {
+        ui: {
+          resourceUri,
+          visibility: ["app"],
+        },
+      },
+    },
+
+    async ({ id }) => {
+
+      const index =
+        food.findIndex(
+          item => item.id === id
+        );
+
+      if (index !== -1) {
+        food.splice(index, 1);
+      }
+
+      return {
+        content: [
+          {
+            type: "text",
+            text:
+              "Registro de alimentação removido.",
+          },
+        ],
+
+        structuredContent: {
+          food: [...food],
+        },
+      };
+    }
+  );
+
+  /*
+   * ----------------------------------------------------------
+   * REGISTRAR TREINO
+   * ----------------------------------------------------------
+   */
+
+  registerAppTool(
+    server,
+    "registrar_treino",
+    {
+      title: "Registrar treino",
+
+      description:
+        "Registra corrida, musculação ou cardio.",
+
+      inputSchema: {
+
+        type: z
+          .string()
+          .min(1),
+
+        date: z
+          .string()
+          .optional(),
+
+        source: z
+          .string()
+          .optional(),
+
+        distanceKm: z
+          .number()
+          .nullable()
+          .optional(),
+
+        pace: z
+          .string()
+          .nullable()
+          .optional(),
+
+        durationMinutes: z
+          .number()
+          .nullable()
+          .optional(),
+
+        calories: z
+          .number()
+          .nullable()
+          .optional(),
+
+        totalExpenditure: z
+          .number()
+          .nullable()
+          .optional(),
+
+        heartRate: z
+          .number()
+          .nullable()
+          .optional(),
+
+        notes: z
+          .string()
+          .nullable()
+          .optional(),
+      },
+
+      outputSchema: {
+        workouts:
+          z.array(workoutItem),
+      },
+
+      _meta: {
+        ui: {
+          resourceUri,
+          visibility: ["model", "app"],
+        },
+      },
+    },
+
+    async ({
+      type,
+      date,
+      source = "manual",
+      distanceKm = null,
+      pace = null,
+      durationMinutes = null,
+      calories = null,
+      totalExpenditure = null,
+      heartRate = null,
+      notes = null,
+    }) => {
+
+      const workout = {
+
+        id: crypto.randomUUID(),
+
+        type,
+
+        date:
+          date ||
+          new Date().toISOString(),
+
+        source,
+
+        distanceKm,
+
+        pace,
+
+        durationMinutes,
+
+        calories,
+
+        totalExpenditure,
+
+        heartRate,
+
+        notes,
+      };
+
+      workouts.push(workout);
+
+      return {
+
+        content: [
+          {
+            type: "text",
+            text:
+              `Treino registrado: ${type}.`,
+          },
+        ],
+
+        structuredContent: {
+          workouts: [...workouts],
+        },
+      };
+    }
+  );
+
+  /*
+   * ----------------------------------------------------------
+   * DESFAZER TREINO
+   * ----------------------------------------------------------
+   */
+
+  registerAppTool(
+    server,
+    "desfazer_treino",
+    {
+      title: "Desfazer treino",
+
+      description:
+        "Remove um treino registrado.",
+
+      inputSchema: {
+        id: z.string().min(1),
+      },
+
+      outputSchema: {
+        workouts:
+          z.array(workoutItem),
+      },
+
+      _meta: {
+        ui: {
+          resourceUri,
+          visibility: ["app"],
+        },
+      },
+    },
+
+    async ({ id }) => {
+
+      const index =
+        workouts.findIndex(
+          item => item.id === id
+        );
+
+      if (index !== -1) {
+        workouts.splice(index, 1);
+      }
+
+      return {
+
+        content: [
+          {
+            type: "text",
+            text:
+              "Registro de treino removido.",
+          },
+        ],
+
+        structuredContent: {
+          workouts: [...workouts],
+        },
+      };
+    }
+  );
+
+  return server;
+}
+
+/*
+ * ============================================================
+ * HEADERS HTTP
+ * ============================================================
+ */
+
+function setCorsHeaders(res) {
+
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "*"
+  );
+
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, DELETE, OPTIONS"
+  );
+
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Accept, Mcp-Session-Id"
+  );
+
+  res.setHeader(
+    "Access-Control-Expose-Headers",
+    "Mcp-Session-Id"
+  );
+}
+
+/*
+ * ============================================================
+ * SERVIDOR HTTP
+ * ============================================================
+ */
+
+const httpServer = createServer(
+  async (req, res) => {
+
+    if (!req.url) {
+      res.writeHead(400);
+      res.end("Missing URL");
+      return;
+    }
+
+    const url = new URL(
+      req.url,
+      `http://${req.headers.host || "localhost"}`
+    );
+
+    /*
+     * --------------------------------------------------------
+     * CORS PREFLIGHT
+     * --------------------------------------------------------
+     */
+
+    if (
+      req.method === "OPTIONS" &&
+      url.pathname === MCP_PATH
+    ) {
+
+      setCorsHeaders(res);
+
+      res.writeHead(204);
+      res.end();
+
+      return;
+    }
+
+    /*
+     * --------------------------------------------------------
+     * TESTE DO SERVIDOR
+     * --------------------------------------------------------
+     */
+
+    if (
+      req.method === "GET" &&
+      url.pathname === "/"
+    ) {
+
+      res.writeHead(200, {
+        "Content-Type":
+          "text/plain; charset=utf-8",
+      });
+
+      res.end(
+        "Atleta Performance MCP server online."
+      );
+
+      return;
+    }
+
+    /*
+     * --------------------------------------------------------
+     * MCP
+     * --------------------------------------------------------
+     */
+
+    if (url.pathname === MCP_PATH) {
+
+      setCorsHeaders(res);
+
+      /*
+       * Recupera a sessão enviada pelo cliente.
+       */
+
+      const sessionId =
+        req.headers["mcp-session-id"];
+
+      let session =
+        sessionId
+          ? sessions.get(sessionId)
+          : null;
+
+      /*
+       * ------------------------------------------------------
+       * NOVA SESSÃO
+       * ------------------------------------------------------
+       */
+
+      if (!session) {
+
+        const server =
+          createAtletaServer();
+
+        const transport =
+          new StreamableHTTPServerTransport(
+            {
+              sessionIdGenerator:
+                () =>
+                  crypto.randomUUID(),
+
+              enableJsonResponse:
+                true,
+            }
+          );
+
+        session = {
+          server,
+          transport,
+        };
+
+        /*
+         * O transporte gera o ID da sessão
+         * durante a primeira conexão.
+         */
+
+        transport.onclose = () => {
+
+          const id =
+            transport.sessionId;
+
+          if (id) {
+            sessions.delete(id);
+          }
+
+          server.close();
+        };
+
+        /*
+         * Conecta o servidor MCP ao transporte.
+         */
+
+        await server.connect(
+          transport
+        );
+
+        /*
+         * Se o transporte já possui ID,
+         * guarda a sessão.
+         */
+
+        if (transport.sessionId) {
+
+          sessions.set(
+            transport.sessionId,
+            session
+          );
+        }
+      }
+
+      /*
+       * Processa a requisição MCP.
+       */
+
+      try {
+
+        await session.transport.handleRequest(
+          req,
+          res
+        );
+
+        /*
+         * Depois da primeira requisição,
+         * o transporte pode ter criado
+         * o session ID.
+         */
+
+        if (
+          session.transport.sessionId &&
+          !sessions.has(
+            session.transport.sessionId
+          )
+        ) {
+
+          sessions.set(
+            session.transport.sessionId,
+            session
+          );
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Erro no transporte MCP:",
+          error
+        );
+
+        if (!res.headersSent) {
+
+          res.writeHead(500, {
+            "Content-Type":
+              "text/plain; charset=utf-8",
+          });
+
+          res.end(
+            "Internal MCP server error."
+          );
+        }
+      }
+
+      return;
+    }
+
+    /*
+     * --------------------------------------------------------
+     * 404
+     * --------------------------------------------------------
+     */
+
+    res.writeHead(404, {
+      "Content-Type":
+        "text/plain; charset=utf-8",
+    });
+
+    res.end("Not Found");
+  }
+);
+
+/*
+ * ============================================================
+ * INICIALIZAÇÃO
+ * ============================================================
+ */
+
+httpServer.listen(
+  PORT,
+  "0.0.0.0",
+  () => {
+
+    console.log(
+      `Atleta Performance MCP rodando na porta ${PORT}`
+    );
+
+    console.log(
+      `MCP endpoint: ${MCP_PATH}`
+    );
+  }
+);
