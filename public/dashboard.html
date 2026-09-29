@@ -32,18 +32,153 @@
 <div class="card"><div class="section-title"><h2>🥗 Balanço nutricional</h2><span class="tag">Dieta-base · 1.783 kcal</span></div><div class="balance"><div class="box"><div class="box-label">Consumo estimado</div><div class="box-value">1.783 kcal</div></div><div class="box"><div class="box-label">Gasto Garmin</div><div class="box-value">—</div></div><div class="box"><div class="box-label">Saldo</div><div class="box-value deficit">—</div></div></div><div class="bar-wrap"><div class="bar-head"><span>Consumo vs. dieta-base</span><b>100%</b></div><div class="bar"><span></span></div></div></div>
 <div class="card tip"><div class="section-title"><h2>🏃 Dica de performance</h2><span class="tag">Hoje</span></div><p>O painel passa a separar <strong>corrida, musculação e cardio</strong>. No longão, mostra também a estratégia de carboidrato e hidratação.</p><div class="fuel"><div><b>30–60 g/h</b><span>carboidrato · referência inicial</span></div><div><b>individualizar</b><span>hidratação conforme suor e clima</span></div></div></div>
 <div class="card"><div class="section-title"><h2>🏋️ Atividades da semana</h2><span class="tag">todos os treinos</span></div><div class="activity-grid"><div class="activity active"><b>🏃 Corrida</b><span>km + pace + FC</span></div><div class="activity"><b>🏋️ Musculação</b><span>duração + kcal</span></div><div class="activity"><b>🚴 Bike</b><span>duração + kcal</span></div><div class="activity"><b>❤️ Outros cardio</b><span>transport + funcional</span></div></div><div class="week"><div class="day"><div class="col"><div class="fill" style="height:0"></div></div><span>SEG</span><div class="km">—</div></div><div class="day"><div class="col"><div class="fill" style="height:35px"></div></div><span>TER</span><div class="km">—</div></div><div class="day"><div class="col"><div class="fill" style="height:0"></div></div><span>QUA</span><div class="km">—</div></div><div class="day"><div class="col"><div class="fill" style="height:58px"></div></div><span>QUI</span><div class="km">—</div></div><div class="day"><div class="col"><div class="fill" style="height:0"></div></div><span>SEX</span><div class="km">—</div></div><div class="day"><div class="col"><div class="fill" style="height:82px"></div></div><span>SÁB</span><div class="km">—</div></div><div class="day"><div class="col"><div class="fill" style="height:20px"></div></div><span>DOM</span><div class="km">—</div></div></div></div>
-<div class="card"><div class="section-title"><h2>🍽️ Plano alimentar</h2><span class="tag">substituições rápidas</span></div><div class="meals"><div class="meal"><div><b>Pré-treino</b><span>Doce de leite + café · opção com banana</span></div><div class="meal-actions"><button onclick="toggleSwap('pre')">Trocar</button><button onclick="mark(this)">Marcar</button></div></div><div id="pre" class="swap-panel"><div class="swap-title">Opções previstas no plano</div><div class="swap-list"><button class="swap">Com banana · 15g doce de leite + 65g banana</button></div></div><div class="meal"><div><b>Café da manhã</b><span>Pão com queijo/ovo ou crepioca</span></div><div class="meal-actions"><button onclick="toggleSwap('cafe')">Trocar</button><button onclick="mark(this)">Marcar</button></div></div><div id="cafe" class="swap-panel"><div class="swap-title">Opções de café</div><div class="swap-list"><button class="swap">Pão + queijo minas + 2 ovos</button><button class="swap">Crepioca + ovo + queijo minas</button><button class="swap">Queijo → 1 ovo</button><button class="swap">Queijo → requeijão light</button><button class="swap">Queijo → muçarela</button></div></div><div class="meal"><div><b>Almoço</b><span>Arroz + batata + feijão + proteína + vegetais</span></div><div class="meal-actions"><button onclick="toggleSwap('almoco')">Trocar</button><button onclick="mark(this)">Marcar</button></div></div><div id="almoco" class="swap-panel"><div class="swap-title">Substituições do almoço</div><div class="swap-list"><button class="swap">Arroz → macarrão</button><button class="swap">Batata → arroz integral</button><button class="swap">Batata → arroz branco</button><button class="swap">Batata → purê de batata</button><button class="swap">Batata → purê de abóbora</button><button class="swap">Frango → filé mignon</button><button class="swap">Frango → peixe</button><button class="swap">Frango → carne magra</button><button class="swap">Legumes → brócolis</button><button class="swap">Legumes → couve-flor</button></div></div><div class="meal"><div><b>Lanche</b><span>Iogurte + fruta + whey ou alternativas prescritas</span></div><div class="meal-actions"><button onclick="toggleSwap('lanche')">Trocar</button><button onclick="mark(this)">Marcar</button></div></div><div id="lanche" class="swap-panel"><div class="swap-title">Opções de lanche</div><div class="swap-list"><button class="swap">Iogurte + uva + whey</button><button class="swap">Panqueca de banana</button><button class="swap">Bold Tube · até 2x/semana</button><button class="swap">YoPRO</button><button class="swap">Uva → banana</button><button class="swap">Uva → morango</button><button class="swap">Uva → kiwi</button></div></div><div class="meal"><div><b>Jantar</b><span>Comida, hambúrguer, Rap10 ou poke</span></div><div class="meal-actions"><button onclick="toggleSwap('jantar')">Trocar</button><button onclick="mark(this)">Marcar</button></div></div><div id="jantar" class="swap-panel"><div class="swap-title">Opções de jantar</div><div class="swap-list"><button class="swap">Comida</button><button class="swap">Hambúrguer</button><button class="swap">Pastel de Rap10</button><button class="swap">Poke · até 2x/semana</button><button class="swap">Arroz → macarrão</button><button class="swap">Frango → peixe</button><button class="swap">Frango → carne magra</button></div></div></div></div>
+<div class="card"><div class="section-title"><h2>🍽️ Plano alimentar</h2><span class="tag">substituições rápidas</span></div><div class="meals"><div class="meal"><div><b>Pré-treino</b><span>Doce de leite + café · opção com banana</span></div><div class="meal-actions"><button onclick="toggleSwap('pre')">Trocar</button><button onclick="mark(this)">Marcar</button></div></div><div id="pre" class="swap-panel"><div class="swap-title">Opções previstas no plano</div><div class="swap-list"><button class="swap" data-description="Com banana · 15g doce de leite + 65g banana">Com banana · 15g doce de leite + 65g banana</button></div></div><div class="meal"><div><b>Café da manhã</b><span>Pão com queijo/ovo ou crepioca</span></div><div class="meal-actions"><button onclick="toggleSwap('cafe')">Trocar</button><button onclick="mark(this)">Marcar</button></div></div><div id="cafe" class="swap-panel"><div class="swap-title">Opções de café</div><div class="swap-list"><button class="swap" data-description="Pão + queijo minas + 2 ovos">Pão + queijo minas + 2 ovos</button><button class="swap" data-description="Crepioca + ovo + queijo minas">Crepioca + ovo + queijo minas</button><button class="swap" data-description="Queijo → 1 ovo">Queijo → 1 ovo</button><button class="swap" data-description="Queijo → requeijão light">Queijo → requeijão light</button><button class="swap" data-description="Queijo → muçarela">Queijo → muçarela</button></div></div><div class="meal"><div><b>Almoço</b><span>Arroz + batata + feijão + proteína + vegetais</span></div><div class="meal-actions"><button onclick="toggleSwap('almoco')">Trocar</button><button onclick="mark(this)">Marcar</button></div></div><div id="almoco" class="swap-panel"><div class="swap-title">Substituições do almoço</div><div class="swap-list"><button class="swap" data-description="Arroz → macarrão">Arroz → macarrão</button><button class="swap" data-description="Batata → arroz integral">Batata → arroz integral</button><button class="swap" data-description="Batata → arroz branco">Batata → arroz branco</button><button class="swap" data-description="Batata → purê de batata">Batata → purê de batata</button><button class="swap" data-description="Batata → purê de abóbora">Batata → purê de abóbora</button><button class="swap" data-description="Frango → filé mignon">Frango → filé mignon</button><button class="swap" data-description="Frango → peixe">Frango → peixe</button><button class="swap" data-description="Frango → carne magra">Frango → carne magra</button><button class="swap">Legumes → brócolis</button><button class="swap">Legumes → couve-flor</button></div></div><div class="meal"><div><b>Lanche</b><span>Iogurte + fruta + whey ou alternativas prescritas</span></div><div class="meal-actions"><button onclick="toggleSwap('lanche')">Trocar</button><button onclick="mark(this)">Marcar</button></div></div><div id="lanche" class="swap-panel"><div class="swap-title">Opções de lanche</div><div class="swap-list"><button class="swap" data-description="Iogurte + uva + whey">Iogurte + uva + whey</button><button class="swap" data-description="Panqueca de banana">Panqueca de banana</button><button class="swap" data-description="Bold Tube · até 2x/semana">Bold Tube · até 2x/semana</button><button class="swap" data-description="YoPRO">YoPRO</button><button class="swap" data-description="Uva → banana">Uva → banana</button><button class="swap" data-description="Uva → morango">Uva → morango</button><button class="swap" data-description="Uva → kiwi">Uva → kiwi</button></div></div><div class="meal"><div><b>Jantar</b><span>Comida, hambúrguer, Rap10 ou poke</span></div><div class="meal-actions"><button onclick="toggleSwap('jantar')">Trocar</button><button onclick="mark(this)">Marcar</button></div></div><div id="jantar" class="swap-panel"><div class="swap-title">Opções de jantar</div><div class="swap-list"><button class="swap" data-description="Comida">Comida</button><button class="swap" data-description="Hambúrguer">Hambúrguer</button><button class="swap" data-description="Pastel de Rap10">Pastel de Rap10</button><button class="swap" data-description="Poke · até 2x/semana">Poke · até 2x/semana</button><button class="swap" data-description="Arroz → macarrão">Arroz → macarrão</button><button class="swap" data-description="Frango → peixe">Frango → peixe</button><button class="swap" data-description="Frango → carne magra">Frango → carne magra</button></div></div></div></div>
 </div>
-<div class="footer"><span>Base alimentar conforme planejamento nutricional enviado. Substituições seguem o planejamento prescrito.</span><button class="action" onclick="alert('As substituições são acessadas por refeição. Os treinos serão classificados por modalidade para acompanhar a carga total da semana.')">Como funciona</button></div>
+<div class="card"><div class="section-title"><h2>🏋️ Registrar treino</h2><span class="tag">manual + Garmin</span></div><div class="workout-form"><select id="workoutType"><option>Corrida</option><option>Musculação</option><option>Cardio</option></select><input id="workoutDate" type="date"><input id="workoutDuration" type="number" min="0" step="1" placeholder="Duração (min)"><input id="workoutDistance" type="number" min="0" step="0.01" placeholder="Distância (km)"><input id="workoutPace" placeholder="Pace (min/km)"><input id="workoutCalories" type="number" min="0" step="1" placeholder="Calorias gastas"><input id="workoutExpenditure" type="number" min="0" step="1" placeholder="Gasto total Garmin"><input id="workoutHeartRate" type="number" min="0" step="1" placeholder="FC média"><input id="workoutNotes" class="wide" placeholder="Observações"><div class="form-actions"><button class="action" type="button" onclick="addWorkout()">Registrar treino</button></div></div><div class="source-note">Para Garmin: envie o print aqui no chat. O assistente lê os dados visíveis e registra o treino automaticamente; não inventa métricas que não aparecem no print.</div><div id="workoutList" class="workout-list"></div></div><div class="footer"><span>Base alimentar conforme planejamento nutricional enviado. Substituições seguem o planejamento prescrito.</span><button class="action" onclick="alert('As substituições são acessadas por refeição. Os treinos serão classificados por modalidade para acompanhar a carga total da semana.')">Como funciona</button></div>
 </div></div>
-<script>
+<script type="module">
+import { App } from 'https://cdn.jsdelivr.net/npm/@modelcontextprotocol/ext-apps@1.6.0/+esm';
 const state={food:[],workouts:[],dailyTarget:1783};
-async function callTool(name,args){const b=window.openai||window.mcp||null;if(!b)return null;if(typeof b.callTool==='function')return await b.callTool({name,arguments:args});if(typeof b.call_tool==='function')return await b.call_tool(name,args);return null}
+const mealOptions={
+  'Pré-treino':[
+    {description:'Doce de leite 30 g + café 240 ml',calories:95},
+    {description:'Doce de leite 15 g + café 240 ml + banana prata 65 g',calories:120}
+  ],
+  'Café da manhã':[
+    {description:'Pão 50 g + queijo minas 30 g + 2 ovos 100 g',calories:390},
+    {description:'Tapioca 30 g + ovo 50 g + queijo minas 60 g',calories:320},
+    {description:'Pão + queijo → 1 ovo',calories:350},
+    {description:'Pão + queijo → requeijão light',calories:340},
+    {description:'Pão + queijo → muçarela',calories:390}
+  ],
+  'Almoço':[
+    {description:'Base: arroz integral 80 g + batata inglesa 200 g + feijão 140 g + frango 100 g + vegetais + salada',calories:600},
+    {description:'Arroz → macarrão cozido 70,6 g',calories:575},
+    {description:'Batata → arroz integral 100 g',calories:600},
+    {description:'Batata → arroz branco 76,8 g',calories:590},
+    {description:'Batata → purê de batata 140 g',calories:590},
+    {description:'Batata → purê de abóbora 246,2 g',calories:540},
+    {description:'Frango → filé mignon',calories:610},
+    {description:'Frango → peixe',calories:570},
+    {description:'Frango → carne magra',calories:600}
+  ],
+  'Lanche':[
+    {description:'Iogurte 165 g + uva 85 g + whey 15 g',calories:180},
+    {description:'Panqueca: whey 15 g + aveia 5 g + ovo 45 g + banana 40 g',calories:190},
+    {description:'Bold Tube 40 g · máximo 2x/semana',calories:190},
+    {description:'Iogurte 165 g + whey 15 g + The Chips Revolution 50 g',calories:230},
+    {description:'SOS YoPRO 250 ml',calories:160},
+    {description:'Fruta: uva → banana 40 g',calories:155},
+    {description:'Fruta: uva → morango 144 g',calories:150},
+    {description:'Fruta: uva → kiwi 76 g',calories:150}
+  ],
+  'Jantar':[
+    {description:'Comida: arroz integral 100 g + batata inglesa 200 g + vegetais + frango 100 g + salada + psyllium',calories:600},
+    {description:'Hambúrguer: fritas 50 g + pão 50 g + patinho 200 g + requeijão light 24 g + vegetais',calories:720},
+    {description:'Rap10: 3 unidades + frango desfiado 120 g + requeijão light 36 g',calories:650},
+    {description:'Poke: espaguete de abobrinha + salmão 150 g + arroz japonês 125 g + cream cheese 45 g + vegetais',calories:700},
+    {description:'Arroz → macarrão',calories:575},
+    {description:'Frango → peixe',calories:570},
+    {description:'Frango → carne magra',calories:600}
+  ]
+};
+const app=new App({name:'Atleta Performance',version:'1.1.0'},{});
+let connected=false;
+async function connectApp(){
+  try{
+    await app.connect();
+    connected=true;
+    const r=await app.callServerTool({name:'open_dashboard',arguments:{}});
+    if(r?.structuredContent){
+      state.food=r.structuredContent.food||[];
+      state.workouts=r.structuredContent.workouts||[];
+      state.dailyTarget=r.structuredContent.dailyTarget||1783;
+    }
+  }catch(e){connected=false}
+  render();
+}
+async function callTool(name,args){
+  if(!connected)return null;
+  return await app.callServerTool({name,arguments:args});
+}
 function toggleSwap(id){document.getElementById(id).classList.toggle('open')}
-async function mark(btn){if(btn.dataset.busy==='1')return;btn.dataset.busy='1';const meal=btn.closest('.meal');const title=meal.querySelector('b')?.textContent||'Refeição';const description=meal.querySelector('span')?.textContent||title;try{await callTool('registrar_alimentacao',{meal:title,description,calories:null});btn.textContent='✓';btn.title='Registrada no Atleta Performance'}catch(e){btn.textContent='✓';btn.title='Marcada nesta tela'}btn.dataset.busy='0'}
-async function chooseSwap(btn){const panel=btn.closest('.swap-panel');const meal=panel?.previousElementSibling;const title=meal?.querySelector('b')?.textContent||'Refeição';const description=btn.textContent.trim();try{await callTool('registrar_alimentacao',{meal:title,description,calories:null})}catch(e){}btn.parentElement.querySelectorAll('.swap').forEach(x=>x.style.outline='none');btn.style.outline='2px solid var(--accent)'}
+function mealData(title){return mealOptions[title]||[]}
+function totalCalories(){return state.food.reduce((s,x)=>s+(Number(x.calories)||0),0)}
+function todayKey(){return new Date().toISOString().slice(0,10)}
+function todayWorkouts(){return state.workouts.filter(x=>(x.date||'').slice(0,10)===todayKey())}
+function updateSummary(){
+  const today=todayWorkouts();
+  const run=today.find(x=>String(x.type).toLowerCase().includes('corrida'))||today[0];
+  const dist=today.reduce((s,x)=>s+(Number(x.distanceKm)||0),0);
+  const cals=today.reduce((s,x)=>s+(Number(x.calories)||0),0);
+  const expenditure=today.find(x=>x.totalExpenditure!=null)?.totalExpenditure;
+  const metrics=document.querySelectorAll('.grid .metric');
+  if(metrics[0])metrics[0].innerHTML=(dist?dist.toFixed(2).replace('.',','):'—')+' <small>km</small>';
+  if(metrics[1])metrics[1].innerHTML=(run?.pace||'—')+' <small>min/km</small>';
+  if(metrics[2])metrics[2].innerHTML=(cals?Math.round(cals).toLocaleString('pt-BR'):'—')+' <small>kcal</small>';
+  if(metrics[3])metrics[3].innerHTML=(expenditure?Math.round(expenditure).toLocaleString('pt-BR'):'—')+' <small>kcal</small>';
+  const box=document.querySelector('.balance .box-value');
+  if(box)box.textContent=Math.round(totalCalories()).toLocaleString('pt-BR')+' kcal';
+  const gasto=document.querySelectorAll('.balance .box-value')[1];
+  if(gasto)gasto.textContent=expenditure?Math.round(expenditure).toLocaleString('pt-BR')+' kcal':'—';
+  const saldo=document.querySelectorAll('.balance .box-value')[2];
+  if(saldo)saldo.textContent=expenditure?Math.round(expenditure-totalCalories()).toLocaleString('pt-BR')+' kcal':'—';
+  const pct=Math.min(100,totalCalories()/state.dailyTarget*100);
+  const bar=document.querySelector('.bar span');if(bar)bar.style.width=pct+'%';
+  const p=document.querySelector('.bar-head b');if(p)p.textContent=Math.round(pct)+'%';
+}
+function renderMeals(){
+  document.querySelectorAll('.meal').forEach(meal=>{
+    const title=meal.querySelector('b')?.textContent;if(!title)return;
+    const item=state.food.find(x=>x.meal===title);
+    const actions=meal.querySelector('.meal-actions');
+    if(item){
+      meal.classList.add('done');
+      actions.innerHTML='<span class="meal-cal">'+(item.calories==null?'kcal não informadas':Math.round(item.calories)+' kcal estimadas')+'</span><button class="undo" type="button" onclick="undoMeal(\''+item.id+'\',this)">Desfazer</button>';
+    }else{
+      meal.classList.remove('done');
+      actions.innerHTML='<button type="button" onclick="toggleSwap(\''+({"Pré-treino":"pre","Café da manhã":"cafe","Almoço":"almoco","Lanche":"lanche","Jantar":"jantar"}[title]||'')+'\')">Trocar</button><button type="button" onclick="mark(this)">Marcar</button>';
+    }
+  });
+}
+function renderWorkoutList(){
+  const box=document.getElementById('workoutList');if(!box)return;
+  box.innerHTML=state.workouts.slice().reverse().map(w=>{
+    const details=[w.durationMinutes?Math.round(w.durationMinutes)+' min':null,w.distanceKm?String(w.distanceKm).replace('.',',')+' km':null,w.calories?Math.round(w.calories)+' kcal':null].filter(Boolean).join(' · ')||'sem métricas adicionais';
+    return '<div class="workout-row"><div><b>'+w.type+'</b><br><span>'+details+' · '+(w.source==='garmin'?'Garmin':'manual')+'</span></div><button class="undo" type="button" onclick="undoWorkout(\''+w.id+'\',this)">Desfazer</button></div>';
+  }).join('');
+}
+function render(){renderMeals();renderWorkoutList();updateSummary()}
+window.toggleSwap=toggleSwap;
+window.mark=async function(btn){
+  const meal=btn.closest('.meal');const title=meal.querySelector('b')?.textContent||'Refeição';const options=mealData(title);const option=options[0]||{description:meal.querySelector('span')?.textContent||title,calories:null};
+  const r=await callTool('registrar_alimentacao',{meal:title,description:option.description,calories:option.calories,calorieSource:'estimativa do dashboard'});
+  if(r?.structuredContent?.food)state.food=r.structuredContent.food;render();
+};
+window.chooseSwap=async function(btn){
+  const panel=btn.closest('.swap-panel');const meal=panel?.previousElementSibling;const title=meal?.querySelector('b')?.textContent||'Refeição';
+  const option=mealData(title).find(x=>btn.dataset.description===x.description)||{description:btn.textContent.trim(),calories:null};
+  const r=await callTool('registrar_alimentacao',{meal:title,description:option.description,calories:option.calories,calorieSource:option.calories==null?null:'estimativa do dashboard'});
+  if(r?.structuredContent?.food)state.food=r.structuredContent.food;render();
+  panel?.classList.remove('open');
+};
+window.undoMeal=async function(id,btn){btn.disabled=true;const r=await callTool('desfazer_alimentacao',{id});if(r?.structuredContent?.food)state.food=r.structuredContent.food;else state.food=state.food.filter(x=>x.id!==id);render()};
+window.addWorkout=async function(){
+  const type=document.getElementById('workoutType').value;
+  const date=document.getElementById('workoutDate').value||todayKey();
+  const num=id=>{const v=document.getElementById(id).value;return v===''?null:Number(v)};
+  const args={type,date,source:'manual',durationMinutes:num('workoutDuration'),distanceKm:num('workoutDistance'),pace:document.getElementById('workoutPace').value||null,calories:num('workoutCalories'),totalExpenditure:num('workoutExpenditure'),heartRate:num('workoutHeartRate'),notes:document.getElementById('workoutNotes').value||null};
+  const r=await callTool('registrar_treino',args);
+  if(r?.structuredContent?.workouts)state.workouts=r.structuredContent.workouts;
+  ['workoutDuration','workoutDistance','workoutPace','workoutCalories','workoutExpenditure','workoutHeartRate','workoutNotes'].forEach(id=>document.getElementById(id).value='');
+  render();
+};
+window.undoWorkout=async function(id,btn){btn.disabled=true;const r=await callTool('desfazer_treino',{id});if(r?.structuredContent?.workouts)state.workouts=r.structuredContent.workouts;else state.workouts=state.workouts.filter(x=>x.id!==id);render()};
 function selectTab(btn,name){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.querySelector('.date').textContent=name+' · dados do Atleta Performance'}
-document.addEventListener('click',e=>{if(e.target.classList.contains('swap'))chooseSwap(e.target)})
+window.selectTab=selectTab;
+document.addEventListener('click',e=>{if(e.target.classList.contains('swap'))window.chooseSwap(e.target)});
+document.querySelectorAll('.swap').forEach(btn=>{btn.dataset.description=btn.textContent.trim()});
+connectApp();
 </script>
 </body>
 </html>
