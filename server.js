@@ -16,38 +16,19 @@ const PORT = Number(process.env.PORT || 3000);
 const MCP_PATH = "/mcp";
 const DAILY_TARGET = 1783;
 
-/*
- * ============================================================
- * ESTADO DO APLICATIVO
- * ============================================================
- */
-
 const food = [];
 const workouts = [];
 
 /*
- * Cada conexão MCP possui seu próprio transport.
- * Isso permite que o cliente mantenha uma sessão estável.
+ * Cada sessão MCP precisa manter o mesmo McpServer e o mesmo transport.
+ * O painel do Atleta Performance usa essa conexão para chamar as ferramentas.
  */
-
 const sessions = new Map();
-
-/*
- * ============================================================
- * DASHBOARD
- * ============================================================
- */
 
 const dashboardHtml = readFileSync(
   "public/dashboard.html",
   "utf8"
 );
-
-/*
- * ============================================================
- * SCHEMAS
- * ============================================================
- */
 
 const foodItem = z.object({
   id: z.string(),
@@ -72,70 +53,43 @@ const workoutItem = z.object({
   notes: z.string().nullable(),
 });
 
-/*
- * ============================================================
- * ESTADO DO DASHBOARD
- * ============================================================
- */
-
-function getDashboardState() {
+function dashboardState() {
   return {
-    food: [...food],
-    workouts: [...workouts],
+    food: food.slice(),
+    workouts: workouts.slice(),
     dailyTarget: DAILY_TARGET,
   };
 }
-
-/*
- * ============================================================
- * CRIAÇÃO DO SERVIDOR MCP
- * ============================================================
- */
 
 function createAtletaServer() {
   const server = new McpServer(
     {
       name: "atleta-performance",
-      version: "2.0.0",
+      version: "1.2.0",
     },
     {
       instructions:
-        "Você é o servidor do Atleta Performance. Registre alimentação e treinos informados pelo usuário. Não invente dados. Calorias que não vierem do usuário ou do planejamento devem ser tratadas como estimativas.",
+        "Use o Atleta Performance para registrar alimentação e treinos e acompanhar o dashboard diário. Não invente dados que o usuário não informou. Calorias das opções alimentares são estimativas quando não vierem do usuário ou do planejamento.",
     }
   );
 
-  /*
-   * ----------------------------------------------------------
-   * RECURSO VISUAL
-   * ----------------------------------------------------------
-   */
-
-  const resourceUri =
-    "ui://atleta-performance/dashboard.html";
+  const resourceUri = "ui://atleta-performance/dashboard.html";
 
   registerAppResource(
     server,
     "atleta-dashboard",
     resourceUri,
     {},
-    async () => {
-      return {
-        contents: [
-          {
-            uri: resourceUri,
-            mimeType: RESOURCE_MIME_TYPE,
-            text: dashboardHtml,
-          },
-        ],
-      };
-    }
+    async () => ({
+      contents: [
+        {
+          uri: resourceUri,
+          mimeType: RESOURCE_MIME_TYPE,
+          text: dashboardHtml,
+        },
+      ],
+    })
   );
-
-  /*
-   * ----------------------------------------------------------
-   * ABRIR DASHBOARD
-   * ----------------------------------------------------------
-   */
 
   registerAppTool(
     server,
@@ -143,7 +97,7 @@ function createAtletaServer() {
     {
       title: "Abrir dashboard",
       description:
-        "Abre o dashboard do Atleta Performance.",
+        "Abre o dashboard do Atleta Performance com os dados atuais.",
       inputSchema: {},
       outputSchema: {
         food: z.array(foodItem),
@@ -156,57 +110,34 @@ function createAtletaServer() {
         },
       },
     },
-    async () => {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "Dashboard do Atleta Performance aberto.",
-          },
-        ],
-        structuredContent:
-          getDashboardState(),
-      };
-    }
+    async () => ({
+      content: [
+        {
+          type: "text",
+          text: "Dashboard do Atleta Performance aberto.",
+        },
+      ],
+      structuredContent: dashboardState(),
+    })
   );
-
-  /*
-   * ----------------------------------------------------------
-   * REGISTRAR ALIMENTAÇÃO
-   * ----------------------------------------------------------
-   */
 
   registerAppTool(
     server,
     "registrar_alimentacao",
     {
       title: "Registrar alimentação",
-
       description:
-        "Registra uma refeição do planejamento alimentar.",
-
+        "Registra uma refeição ou opção específica do planejamento alimentar.",
       inputSchema: {
         meal: z.string().min(1),
         description: z.string().min(1),
-        calories: z
-          .number()
-          .nullable()
-          .optional(),
-
-        calorieSource: z
-          .string()
-          .nullable()
-          .optional(),
-
-        date: z
-          .string()
-          .optional(),
+        calories: z.number().nullable().optional(),
+        calorieSource: z.string().nullable().optional(),
+        date: z.string().optional(),
       },
-
       outputSchema: {
         food: z.array(foodItem),
       },
-
       _meta: {
         ui: {
           resourceUri,
@@ -214,7 +145,6 @@ function createAtletaServer() {
         },
       },
     },
-
     async ({
       meal,
       description,
@@ -222,25 +152,6 @@ function createAtletaServer() {
       calorieSource = null,
       date,
     }) => {
-
-      const itemDate =
-        (date || new Date().toISOString())
-          .slice(0, 10);
-
-      /*
-       * Remove o registro anterior da mesma refeição
-       * no mesmo dia.
-       */
-
-      for (let i = food.length - 1; i >= 0; i--) {
-        if (
-          food[i].meal === meal &&
-          food[i].date.slice(0, 10) === itemDate
-        ) {
-          food.splice(i, 1);
-        }
-      }
-
       const item = {
         id: crypto.randomUUID(),
         meal,
@@ -250,47 +161,46 @@ function createAtletaServer() {
         date: date || new Date().toISOString(),
       };
 
+      const itemDate = item.date.slice(0, 10);
+
+      for (let i = food.length - 1; i >= 0; i -= 1) {
+        if (
+          food[i].meal === meal &&
+          food[i].date.slice(0, 10) === itemDate
+        ) {
+          food.splice(i, 1);
+        }
+      }
+
       food.push(item);
 
       return {
         content: [
           {
             type: "text",
-            text:
-              `Alimentação registrada: ${meal}.`,
+            text: `Alimentação registrada: ${meal} — ${description}.`,
           },
         ],
-
         structuredContent: {
-          food: [...food],
+          food: food.slice(),
         },
       };
     }
   );
-
-  /*
-   * ----------------------------------------------------------
-   * DESFAZER ALIMENTAÇÃO
-   * ----------------------------------------------------------
-   */
 
   registerAppTool(
     server,
     "desfazer_alimentacao",
     {
       title: "Desfazer alimentação",
-
       description:
-        "Remove uma refeição registrada.",
-
+        "Remove uma refeição já registrada no dashboard.",
       inputSchema: {
         id: z.string().min(1),
       },
-
       outputSchema: {
         food: z.array(foodItem),
       },
-
       _meta: {
         ui: {
           resourceUri,
@@ -298,15 +208,12 @@ function createAtletaServer() {
         },
       },
     },
-
     async ({ id }) => {
+      const index = food.findIndex(
+        (item) => item.id === id
+      );
 
-      const index =
-        food.findIndex(
-          item => item.id === id
-        );
-
-      if (index !== -1) {
+      if (index >= 0) {
         food.splice(index, 1);
       }
 
@@ -314,88 +221,38 @@ function createAtletaServer() {
         content: [
           {
             type: "text",
-            text:
-              "Registro de alimentação removido.",
+            text: "Registro de alimentação desfeito.",
           },
         ],
-
         structuredContent: {
-          food: [...food],
+          food: food.slice(),
         },
       };
     }
   );
-
-  /*
-   * ----------------------------------------------------------
-   * REGISTRAR TREINO
-   * ----------------------------------------------------------
-   */
 
   registerAppTool(
     server,
     "registrar_treino",
     {
       title: "Registrar treino",
-
       description:
-        "Registra corrida, musculação ou cardio.",
-
+        "Registra um treino de corrida, musculação ou cardio, manualmente ou a partir de dados extraídos do Garmin.",
       inputSchema: {
-
-        type: z
-          .string()
-          .min(1),
-
-        date: z
-          .string()
-          .optional(),
-
-        source: z
-          .string()
-          .optional(),
-
-        distanceKm: z
-          .number()
-          .nullable()
-          .optional(),
-
-        pace: z
-          .string()
-          .nullable()
-          .optional(),
-
-        durationMinutes: z
-          .number()
-          .nullable()
-          .optional(),
-
-        calories: z
-          .number()
-          .nullable()
-          .optional(),
-
-        totalExpenditure: z
-          .number()
-          .nullable()
-          .optional(),
-
-        heartRate: z
-          .number()
-          .nullable()
-          .optional(),
-
-        notes: z
-          .string()
-          .nullable()
-          .optional(),
+        type: z.string().min(1),
+        date: z.string().optional(),
+        source: z.string().optional(),
+        distanceKm: z.number().nullable().optional(),
+        pace: z.string().nullable().optional(),
+        durationMinutes: z.number().nullable().optional(),
+        calories: z.number().nullable().optional(),
+        totalExpenditure: z.number().nullable().optional(),
+        heartRate: z.number().nullable().optional(),
+        notes: z.string().nullable().optional(),
       },
-
       outputSchema: {
-        workouts:
-          z.array(workoutItem),
+        workouts: z.array(workoutItem),
       },
-
       _meta: {
         ui: {
           resourceUri,
@@ -403,7 +260,6 @@ function createAtletaServer() {
         },
       },
     },
-
     async ({
       type,
       date,
@@ -416,77 +272,49 @@ function createAtletaServer() {
       heartRate = null,
       notes = null,
     }) => {
-
       const workout = {
-
         id: crypto.randomUUID(),
-
         type,
-
-        date:
-          date ||
-          new Date().toISOString(),
-
+        date: date || new Date().toISOString(),
         source,
-
         distanceKm,
-
         pace,
-
         durationMinutes,
-
         calories,
-
         totalExpenditure,
-
         heartRate,
-
         notes,
       };
 
       workouts.push(workout);
 
       return {
-
         content: [
           {
             type: "text",
-            text:
-              `Treino registrado: ${type}.`,
+            text: `Treino registrado: ${type}.`,
           },
         ],
-
         structuredContent: {
-          workouts: [...workouts],
+          workouts: workouts.slice(),
         },
       };
     }
   );
-
-  /*
-   * ----------------------------------------------------------
-   * DESFAZER TREINO
-   * ----------------------------------------------------------
-   */
 
   registerAppTool(
     server,
     "desfazer_treino",
     {
       title: "Desfazer treino",
-
       description:
-        "Remove um treino registrado.",
-
+        "Remove um treino registrado no dashboard.",
       inputSchema: {
         id: z.string().min(1),
       },
-
       outputSchema: {
-        workouts:
-          z.array(workoutItem),
+        workouts: z.array(workoutItem),
       },
-
       _meta: {
         ui: {
           resourceUri,
@@ -494,30 +322,24 @@ function createAtletaServer() {
         },
       },
     },
-
     async ({ id }) => {
+      const index = workouts.findIndex(
+        (item) => item.id === id
+      );
 
-      const index =
-        workouts.findIndex(
-          item => item.id === id
-        );
-
-      if (index !== -1) {
+      if (index >= 0) {
         workouts.splice(index, 1);
       }
 
       return {
-
         content: [
           {
             type: "text",
-            text:
-              "Registro de treino removido.",
+            text: "Treino desfeito.",
           },
         ],
-
         structuredContent: {
-          workouts: [...workouts],
+          workouts: workouts.slice(),
         },
       };
     }
@@ -526,44 +348,44 @@ function createAtletaServer() {
   return server;
 }
 
-/*
- * ============================================================
- * HEADERS HTTP
- * ============================================================
- */
+async function createSession() {
+  const server = createAtletaServer();
 
-function setCorsHeaders(res) {
+  const transport =
+    new StreamableHTTPServerTransport({
+      sessionIdGenerator: () =>
+        crypto.randomUUID(),
+      enableJsonResponse: true,
+    });
 
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "*"
-  );
+  await server.connect(transport);
 
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, DELETE, OPTIONS"
-  );
+  const sessionId = transport.sessionId;
 
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Accept, Mcp-Session-Id"
-  );
+  if (sessionId) {
+    sessions.set(sessionId, {
+      server,
+      transport,
+    });
 
-  res.setHeader(
-    "Access-Control-Expose-Headers",
-    "Mcp-Session-Id"
-  );
+    transport.onclose = () => {
+      sessions.delete(sessionId);
+
+      try {
+        server.close();
+      } catch {}
+    };
+  }
+
+  return {
+    server,
+    transport,
+    sessionId,
+  };
 }
-
-/*
- * ============================================================
- * SERVIDOR HTTP
- * ============================================================
- */
 
 const httpServer = createServer(
   async (req, res) => {
-
     if (!req.url) {
       res.writeHead(400);
       res.end("Missing URL");
@@ -576,37 +398,35 @@ const httpServer = createServer(
     );
 
     /*
-     * --------------------------------------------------------
-     * CORS PREFLIGHT
-     * --------------------------------------------------------
+     * CORS / preflight
      */
-
     if (
       req.method === "OPTIONS" &&
       url.pathname === MCP_PATH
     ) {
+      res.writeHead(204, {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods":
+          "POST, GET, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers":
+          "content-type, mcp-session-id, accept",
+        "Access-Control-Expose-Headers":
+          "Mcp-Session-Id",
+      });
 
-      setCorsHeaders(res);
-
-      res.writeHead(204);
       res.end();
-
       return;
     }
 
     /*
-     * --------------------------------------------------------
-     * TESTE DO SERVIDOR
-     * --------------------------------------------------------
+     * Health check do Render
      */
-
     if (
       req.method === "GET" &&
       url.pathname === "/"
     ) {
-
       res.writeHead(200, {
-        "Content-Type":
+        "content-type":
           "text/plain; charset=utf-8",
       });
 
@@ -618,18 +438,23 @@ const httpServer = createServer(
     }
 
     /*
-     * --------------------------------------------------------
-     * MCP
-     * --------------------------------------------------------
+     * Endpoint MCP
      */
+    if (
+      url.pathname === MCP_PATH &&
+      ["POST", "GET", "DELETE"].includes(
+        req.method
+      )
+    ) {
+      res.setHeader(
+        "Access-Control-Allow-Origin",
+        "*"
+      );
 
-    if (url.pathname === MCP_PATH) {
-
-      setCorsHeaders(res);
-
-      /*
-       * Recupera a sessão enviada pelo cliente.
-       */
+      res.setHeader(
+        "Access-Control-Expose-Headers",
+        "Mcp-Session-Id"
+      );
 
       const sessionId =
         req.headers["mcp-session-id"];
@@ -640,118 +465,91 @@ const httpServer = createServer(
           : null;
 
       /*
-       * ------------------------------------------------------
-       * NOVA SESSÃO
-       * ------------------------------------------------------
+       * POST sem sessão = primeira conexão.
+       * Criamos uma sessão MCP persistente.
        */
-
       if (!session) {
+        if (
+          req.method !== "POST"
+        ) {
+          res.writeHead(400, {
+            "content-type":
+              "application/json",
+          });
 
-        const server =
-          createAtletaServer();
-
-        const transport =
-          new StreamableHTTPServerTransport(
-            {
-              sessionIdGenerator:
-                () =>
-                  crypto.randomUUID(),
-
-              enableJsonResponse:
-                true,
-            }
+          res.end(
+            JSON.stringify({
+              jsonrpc: "2.0",
+              error: {
+                code: -32000,
+                message:
+                  "Sessão MCP não encontrada.",
+              },
+              id: null,
+            })
           );
 
-        session = {
-          server,
-          transport,
-        };
+          return;
+        }
 
-        /*
-         * O transporte gera o ID da sessão
-         * durante a primeira conexão.
-         */
+        try {
+          session = await createSession();
+        } catch (error) {
+          console.error(
+            "Erro ao criar sessão MCP:",
+            error
+          );
 
-        transport.onclose = () => {
+          if (!res.headersSent) {
+            res.writeHead(500, {
+              "content-type":
+                "application/json",
+            });
 
-          const id =
-            transport.sessionId;
-
-          if (id) {
-            sessions.delete(id);
+            res.end(
+              JSON.stringify({
+                jsonrpc: "2.0",
+                error: {
+                  code: -32603,
+                  message:
+                    "Não foi possível iniciar a sessão MCP.",
+                },
+                id: null,
+              })
+            );
           }
 
-          server.close();
-        };
-
-        /*
-         * Conecta o servidor MCP ao transporte.
-         */
-
-        await server.connect(
-          transport
-        );
-
-        /*
-         * Se o transporte já possui ID,
-         * guarda a sessão.
-         */
-
-        if (transport.sessionId) {
-
-          sessions.set(
-            transport.sessionId,
-            session
-          );
+          return;
         }
       }
 
-      /*
-       * Processa a requisição MCP.
-       */
-
       try {
-
         await session.transport.handleRequest(
           req,
           res
         );
-
-        /*
-         * Depois da primeira requisição,
-         * o transporte pode ter criado
-         * o session ID.
-         */
-
-        if (
-          session.transport.sessionId &&
-          !sessions.has(
-            session.transport.sessionId
-          )
-        ) {
-
-          sessions.set(
-            session.transport.sessionId,
-            session
-          );
-        }
-
       } catch (error) {
-
         console.error(
-          "Erro no transporte MCP:",
+          "Erro no MCP:",
           error
         );
 
         if (!res.headersSent) {
-
           res.writeHead(500, {
-            "Content-Type":
-              "text/plain; charset=utf-8",
+            "content-type":
+              "application/json",
           });
 
           res.end(
-            "Internal MCP server error."
+            JSON.stringify({
+              jsonrpc: "2.0",
+              error: {
+                code: -32603,
+                message:
+                  "Internal server error",
+              },
+              id: null,
+            })
           );
         }
       }
@@ -759,38 +557,17 @@ const httpServer = createServer(
       return;
     }
 
-    /*
-     * --------------------------------------------------------
-     * 404
-     * --------------------------------------------------------
-     */
-
-    res.writeHead(404, {
-      "Content-Type":
-        "text/plain; charset=utf-8",
-    });
-
+    res.writeHead(404);
     res.end("Not Found");
   }
 );
-
-/*
- * ============================================================
- * INICIALIZAÇÃO
- * ============================================================
- */
 
 httpServer.listen(
   PORT,
   "0.0.0.0",
   () => {
-
     console.log(
       `Atleta Performance MCP rodando na porta ${PORT}`
-    );
-
-    console.log(
-      `MCP endpoint: ${MCP_PATH}`
     );
   }
 );
