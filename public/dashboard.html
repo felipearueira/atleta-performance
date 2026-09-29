@@ -36,5 +36,14 @@
 </div>
 <div class="footer"><span>Base alimentar conforme planejamento nutricional enviado. Substituições seguem o planejamento prescrito.</span><button class="action" onclick="alert('As substituições são acessadas por refeição. Os treinos serão classificados por modalidade para acompanhar a carga total da semana.')">Como funciona</button></div>
 </div></div>
-<script>function toggleSwap(id){document.getElementById(id).classList.toggle('open')}function mark(btn){btn.textContent=btn.textContent==='✓'?'Marcar':'✓'}function selectTab(btn,name){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.querySelector('.date').textContent=name+' · aguardando dados do Garmin'}</script>
-</body></html>
+<script>
+const state={food:[],workouts:[],dailyTarget:1783};
+async function callTool(name,args){const b=window.openai||window.mcp||null;if(!b)return null;if(typeof b.callTool==='function')return await b.callTool({name,arguments:args});if(typeof b.call_tool==='function')return await b.call_tool(name,args);return null}
+function toggleSwap(id){document.getElementById(id).classList.toggle('open')}
+async function mark(btn){if(btn.dataset.busy==='1')return;btn.dataset.busy='1';const meal=btn.closest('.meal');const title=meal.querySelector('b')?.textContent||'Refeição';const description=meal.querySelector('span')?.textContent||title;try{await callTool('registrar_alimentacao',{meal:title,description,calories:null});btn.textContent='✓';btn.title='Registrada no Atleta Performance'}catch(e){btn.textContent='✓';btn.title='Marcada nesta tela'}btn.dataset.busy='0'}
+async function chooseSwap(btn){const panel=btn.closest('.swap-panel');const meal=panel?.previousElementSibling;const title=meal?.querySelector('b')?.textContent||'Refeição';const description=btn.textContent.trim();try{await callTool('registrar_alimentacao',{meal:title,description,calories:null})}catch(e){}btn.parentElement.querySelectorAll('.swap').forEach(x=>x.style.outline='none');btn.style.outline='2px solid var(--accent)'}
+function selectTab(btn,name){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.querySelector('.date').textContent=name+' · dados do Atleta Performance'}
+document.addEventListener('click',e=>{if(e.target.classList.contains('swap'))chooseSwap(e.target)})
+</script>
+</body>
+</html>
