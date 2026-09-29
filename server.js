@@ -18,10 +18,6 @@ const MCP_PATH = "/mcp";
 let food = [];
 let workouts = [];
 
-/*
- * O dashboard será colocado neste arquivo:
- * public/dashboard.html
- */
 const dashboardHtml = readFileSync(
   "public/dashboard.html",
   "utf8"
@@ -39,10 +35,6 @@ function createAtletaServer() {
     }
   );
 
-  /*
-   * Registra o dashboard como uma interface visual
-   * que pode ser exibida dentro do ChatGPT.
-   */
   registerAppResource(
     server,
     "atleta-dashboard",
@@ -59,9 +51,6 @@ function createAtletaServer() {
     })
   );
 
-  /*
-   * Ferramenta para abrir o dashboard.
-   */
   registerAppTool(
     server,
     "open_dashboard",
@@ -114,9 +103,6 @@ function createAtletaServer() {
     })
   );
 
-  /*
-   * Ferramenta para registrar alimentação.
-   */
   registerAppTool(
     server,
     "registrar_alimentacao",
@@ -169,9 +155,6 @@ function createAtletaServer() {
     }
   );
 
-  /*
-   * Ferramenta para registrar treinos.
-   */
   registerAppTool(
     server,
     "registrar_treino",
@@ -247,9 +230,6 @@ function createAtletaServer() {
   return server;
 }
 
-/*
- * Servidor HTTP.
- */
 const httpServer = createServer(async (req, res) => {
   if (!req.url) {
     res.writeHead(400);
@@ -262,9 +242,6 @@ const httpServer = createServer(async (req, res) => {
     `http://${req.headers.host || "localhost"}`
   );
 
-  /*
-   * CORS.
-   */
   if (req.method === "OPTIONS" && url.pathname === MCP_PATH) {
     res.writeHead(204, {
       "Access-Control-Allow-Origin": "*",
@@ -280,9 +257,6 @@ const httpServer = createServer(async (req, res) => {
     return;
   }
 
-  /*
-   * Teste simples do servidor.
-   */
   if (req.method === "GET" && url.pathname === "/") {
     res.writeHead(200, {
       "content-type": "text/plain; charset=utf-8",
@@ -295,9 +269,6 @@ const httpServer = createServer(async (req, res) => {
     return;
   }
 
-  /*
-   * Endpoint MCP.
-   */
   if (
     url.pathname === MCP_PATH &&
     ["POST", "GET", "DELETE"].includes(req.method)
