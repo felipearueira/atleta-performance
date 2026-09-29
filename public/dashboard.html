@@ -41,7 +41,7 @@ const state={food:[],workouts:[],dailyTarget:1783,selected:{}};
 const mealKcal={'Pré-treino':100,'Café da manhã':360,'Almoço':650,'Lanche':180,'Jantar':493};
 const app=new App({name:'Atleta Performance',version:'1.0.0'},{});
 let connected=false;
-async function connectApp(){try{await app.connect();connected=true;const r=await app.callServerTool({name:'open_dashboard',arguments:{}});if(r?.structuredContent){state.food=r.structuredContent.food||[];state.workouts=r.structuredContent.workouts||[];state.dailyTarget=r.structuredContent.dailyTarget||1783;}render();}catch(e){connected=false;render();}}
+async function connectApp(){try{await app.connect();connected=true;const r=await app.callServerTool({name:'open_dashboard',arguments:{}});if(r?.structuredContent){state.food=r.structuredContent.food||[];state.workouts=r.structuredContent.workouts||[];state.dailyTarget=r.structuredContent.dailyTarget||1783;}render();}catch(e){uiConnected=false;if(status){status.style.display='block';status.textContent='ERRO DE CONEXÃO: '+(e?.message||String(e))}}
 async function callTool(name,args){if(!connected)return null;return await app.callServerTool({name,arguments:args})}
 function toggleSwap(id){document.getElementById(id).classList.toggle('open')}
 function totalCalories(){return state.food.reduce((s,x)=>s+(Number(x.calories)||0),0)}
