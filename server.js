@@ -108,6 +108,7 @@ function createAtletaServer() {
         ui: {
           resourceUri,
         },
+        "openai/widgetAccessible": true,
       },
     },
     async () => ({
@@ -143,6 +144,7 @@ function createAtletaServer() {
           resourceUri,
           visibility: ["model", "app"],
         },
+        "openai/widgetAccessible": true,
       },
     },
     async ({
@@ -206,6 +208,7 @@ function createAtletaServer() {
           resourceUri,
           visibility: ["app"],
         },
+        "openai/widgetAccessible": true,
       },
     },
     async ({ id }) => {
@@ -258,6 +261,7 @@ function createAtletaServer() {
           resourceUri,
           visibility: ["model", "app"],
         },
+        "openai/widgetAccessible": true,
       },
     },
     async ({
@@ -320,6 +324,7 @@ function createAtletaServer() {
           resourceUri,
           visibility: ["app"],
         },
+        "openai/widgetAccessible": true,
       },
     },
     async ({ id }) => {
